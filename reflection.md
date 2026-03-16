@@ -51,3 +51,9 @@ The secret number kept changing because Streamlit reruns the script after each i
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
 
 One habit I want to keep is writing or running tests immediately after each small logic change instead of waiting until the end. Next time, I would ask AI for smaller, testable steps and demand expected input/output examples before applying suggestions. This project changed how I view AI-generated code: it is useful for speed, but it still needs careful human validation. I now treat AI output as a draft that must be debugged, tested, and reviewed like any other code.
+
+---
+
+## 6. AI Model Comparison (Challenge 5)
+
+I compared a fix for the hint-direction bug using Copilot and ChatGPT. Copilot gave the more readable patch in this project because it matched my existing file structure and made small, targeted edits near the affected logic. ChatGPT gave a clearer explanation of *why* the bug happened (mismatch between outcome labels and feedback text), but its first suggestion was broader than needed for this codebase. I verified both suggestions by running pytest and manually testing in Streamlit with known high/low guesses from the debug panel.

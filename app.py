@@ -1,6 +1,14 @@
 import random
 import streamlit as st
-from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
+from logic_utils import (
+    get_range_for_difficulty,
+    parse_guess,
+    check_guess,
+    update_score,
+    get_temperature_hint,
+    load_high_score,
+    save_high_score,
+)
 
 
 def outcome_message(outcome: str) -> str:
@@ -54,11 +62,20 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "history_rows" not in st.session_state:
+    st.session_state.history_rows = []
+
+if "best_score" not in st.session_state:
+    # FIX: Added with Copilot Agent-style refactor to persist best runs.
+    st.session_state.best_score = load_high_score()
+
+st.sidebar.metric("🏆 High Score", st.session_state.best_score)
+
 st.subheader("Make a guess")
 
 st.info(
     f"Guess a number between {low} and {high}. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
+    f"Attempts left: {max(0, attempt_limit - st.session_state.attempts)}"
 )
 
 with st.expander("Developer Debug Info"):
@@ -87,6 +104,7 @@ if new_game:
     st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
     st.session_state.history = []
+    st.session_state.history_rows = []
     st.session_state.score = 0
     st.success("New game started.")
     st.rerun()
@@ -114,9 +132,26 @@ if submit:
 
         outcome = check_guess(guess_int, secret)
         message = outcome_message(outcome)
+        temp_hint = get_temperature_hint(guess_int, secret)
+        distance = abs(guess_int - secret)
+
+        st.session_state.history_rows.append(
+            {
+                "Attempt": st.session_state.attempts,
+                "Guess": guess_int,
+                "Outcome": outcome,
+                "Distance": distance,
+                "Hot/Cold": temp_hint,
+            }
+        )
 
         if show_hint:
-            st.warning(message)
+            if outcome == "Win":
+                st.success(message)
+            elif distance <= 5:
+                st.warning(f"{message} {temp_hint}")
+            else:
+                st.info(f"{message} {temp_hint}")
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -127,6 +162,10 @@ if submit:
         if outcome == "Win":
             st.balloons()
             st.session_state.status = "won"
+            if st.session_state.score > st.session_state.best_score:
+                st.session_state.best_score = st.session_state.score
+                save_high_score(st.session_state.best_score)
+                st.success("🏆 New high score saved!")
             st.success(
                 f"You won! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
@@ -139,6 +178,13 @@ if submit:
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+
+if st.session_state.history_rows:
+    st.subheader("📊 Session Guess Summary")
+    st.dataframe(st.session_state.history_rows, use_container_width=True)
+
+    st.sidebar.subheader("Guess History")
+    st.sidebar.dataframe(st.session_state.history_rows, use_container_width=True)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")

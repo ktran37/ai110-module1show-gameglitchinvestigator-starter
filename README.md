@@ -42,24 +42,27 @@ This app is a Streamlit number guessing game where the player tries to guess a s
 - Fixed guess evaluation to always use numeric comparisons and return consistent outcomes (`Win`, `Too High`, `Too Low`).
 - Corrected hint text mapping in the UI so guidance matches the actual guess result.
 - Stabilized game state behavior for new games by resetting status/history/score and reusing the selected difficulty range.
-- Added a regression test to confirm numeric comparison behavior and ran pytest successfully (`4 passed`).
+- Added a regression test to confirm numeric comparison behavior and expanded edge-case coverage with pytest (`9 passed`).
 
 ## 📸 Demo
 
 - [x] Fixed game runs and is winnable with correct hints.
-- [ ] Insert screenshot: winning game screen with Developer Debug Info visible.
+- [x] Inserted screenshot: winning game screen with Developer Debug Info visible.
 
 Optional screenshot target:
-- `winning-game-screen.png`
+- `winning_game_screen.png`
+
+![Winning game screenshot](winning_game_screen.png)
 
 ## 🚀 Stretch Features
 
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+- [x] Enhanced UI implemented with color-coded hints, hot/cold signals, and session summary table.
+- [x] Enhanced UI screenshot included below.
 
 If you complete Challenge 1 (Advanced Edge-Case Testing), add:
 - [x] Added edge-case tests for negative numbers, non-integer decimals, and extremely large values.
-- [x] Verified all tests pass with pytest (`7 passed`).
-- [ ] Insert screenshot of pytest output showing Stretch 1 tests passing.
+- [x] Verified all tests pass with pytest (`9 passed`).
+- [x] Inserted screenshot of pytest output showing Stretch 1 tests passing.
 
 ### Stretch 1 Notes
 Edge-case tests were added in [tests/test_game_logic.py](tests/test_game_logic.py) to verify these inputs are handled gracefully:
@@ -69,3 +72,27 @@ Edge-case tests were added in [tests/test_game_logic.py](tests/test_game_logic.p
 
 Suggested screenshot filename:
 - `stretch1-pytest-results.png`
+
+![Stretch 1 pytest results](stretch1-pytest-results.png)
+
+## ✅ Optional Challenge Progress
+
+### Challenge 2: Feature Expansion via Agent Mode
+- Implemented a persistent **High Score tracker** that saves best score to `high_score.txt`.
+- Added a **Guess History summary table** in both main content and sidebar.
+- Added collaboration notes in code near changes (for example, in `app.py` where high score state is initialized).
+
+### Challenge 3: Professional Documentation and Linting
+- Added professional docstrings to every function in `logic_utils.py`.
+- Cleaned function behavior and naming for readability and consistency.
+- Verified no file-level errors in updated files and all tests pass.
+
+### Challenge 4: Enhanced Game UI
+- Added color-coded feedback (`st.success`, `st.warning`, `st.info`) based on guess accuracy.
+- Added hot/cold hinting with emoji states (`Very hot`, `Warm`, `Cool`, `Ice cold`).
+- Added a structured session table showing attempt, guess, outcome, distance, and hot/cold feedback.
+
+![Enhanced game UI](winning_game_screen.png)
+
+### Challenge 5: AI Model Comparison
+- Completed in `reflection.md` with a short comparison of Copilot vs ChatGPT outputs for a logic bug fix.

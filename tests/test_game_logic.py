@@ -1,4 +1,10 @@
-from logic_utils import check_guess, parse_guess
+from logic_utils import (
+    check_guess,
+    parse_guess,
+    get_temperature_hint,
+    load_high_score,
+    save_high_score,
+)
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -40,3 +46,19 @@ def test_parse_guess_extremely_large_value():
     assert ok is True
     assert guess == 999999999999999999999999
     assert err is None
+
+
+def test_temperature_hint_ranges():
+    assert get_temperature_hint(50, 50) == "🎯 Exact match"
+    assert get_temperature_hint(49, 50) == "🔥 Very hot"
+    assert get_temperature_hint(45, 50) == "🌤 Warm"
+    assert get_temperature_hint(40, 50) == "❄️ Cool"
+    assert get_temperature_hint(1, 50) == "🧊 Ice cold"
+
+
+def test_high_score_persistence(tmp_path):
+    high_score_file = tmp_path / "high_score.txt"
+    assert load_high_score(high_score_file) == 0
+
+    save_high_score(123, high_score_file)
+    assert load_high_score(high_score_file) == 123
